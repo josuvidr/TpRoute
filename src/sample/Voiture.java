@@ -14,8 +14,7 @@ public class Voiture
     public List<Noeud> routeRestante;//liste des noeuds restants
     public Noeud origine;
     public Noeud destination;
-    public boolean pause;
-    public boolean arrivee;
+    public boolean vertical;
 
 
     Voiture(){}
@@ -44,7 +43,7 @@ public class Voiture
         routeRestante.addAll(trajet);
     }
 
-    public Voiture(int no, int xo, int yo, int xd, int yd) {
+    public Voiture(int no, int xo, int yo, int xd, int yd, boolean vertical) {
         this(no);
         this.origine = ReseauRoutier.getNoeud(xo, yo);
         x = origine.x;
@@ -52,6 +51,7 @@ public class Voiture
         this.destination = ReseauRoutier.getNoeud(xd,yd);
         calculerRoute();
         routeRestante.addAll(trajet);
+        this.vertical = vertical;
     }
 
     public void calculerRoute()
@@ -84,9 +84,6 @@ public class Voiture
         trajet.add(destination);
     }
 
-    public void IsPause(){
-
-    }
 
     public void setX(int x) {
         this.x = x;
@@ -108,12 +105,6 @@ public class Voiture
         return suivant;
     }
 
-    public void setXY(int x, int y)
-    {
-        this.x = x; this.y = y;
-        if (destination!=null && x==destination.x && y==destination.y) arrivee = true;
-    }
-
     public String toString()
     {
         StringBuilder sb = new StringBuilder("voiture ").append(id);
@@ -124,7 +115,4 @@ public class Voiture
 
     public int getX() { return x; }
     public int getY() { return y; }
-    public boolean isPause() {return pause; }
-    public boolean isArrivee() { return arrivee; }
-    public void setPause(boolean pause) { this.pause = pause; }
 }

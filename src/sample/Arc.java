@@ -6,7 +6,6 @@ public class Arc
 {
     private Noeud start;
     private Noeud end;
-    List<Voiture> cars;
     String name;
 
     public Arc() {   }

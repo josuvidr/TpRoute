@@ -1,8 +1,5 @@
 package sample;
 
-import javafx.scene.shape.Rectangle;
-
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +13,7 @@ public class Noeud {
     List<Arc> arcSortants;
     List<Voiture> cars;
     double id;
-    ArrayList<Rectangle> ListFeux = new ArrayList<>();
+    ArrayList<Feux> ListFeux = new ArrayList<>();
 
     Noeud(int _x, int _y)
     {
