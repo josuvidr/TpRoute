@@ -11,7 +11,7 @@ public class Noeud {
     List<Noeud> noeudsAccessibles;
     List<Arc> arcEntrants;
     List<Arc> arcSortants;
-    List<Voiture> cars;
+    boolean supp = false;
     double id;
     ArrayList<Feux> ListFeux = new ArrayList<>();
 

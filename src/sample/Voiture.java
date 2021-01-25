@@ -15,6 +15,7 @@ public class Voiture
     public Noeud origine;
     public Noeud destination;
     public boolean vertical;
+    public Noeud position;
 
 
     Voiture(){}
@@ -43,7 +44,7 @@ public class Voiture
         routeRestante.addAll(trajet);
     }
 
-    public Voiture(int no, int xo, int yo, int xd, int yd, boolean vertical) {
+    public Voiture(int no, int xo, int yo, int xd, int yd, boolean vertical, Noeud position) {
         this(no);
         this.origine = ReseauRoutier.getNoeud(xo, yo);
         x = origine.x;
@@ -52,6 +53,7 @@ public class Voiture
         calculerRoute();
         routeRestante.addAll(trajet);
         this.vertical = vertical;
+        this.position = position;
     }
 
     public void calculerRoute()

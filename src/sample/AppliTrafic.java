@@ -3,6 +3,8 @@ package sample;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.sun.source.doctree.SystemPropertyTree;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -17,7 +19,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class AppliTrafic extends Application  {
-
+    ArrayList<Noeud> Listedit = new ArrayList<>();
     ArrayList<Voiture> voitures;
     ArrayList<Noeud> tempoNoeuds= new ArrayList<>();
     List<DessinVoiture> dessinsVoitures;
@@ -117,6 +119,8 @@ public class AppliTrafic extends Application  {
             }
         }
         //createCar(tempoNoeuds);
+
+
     }
 
     private void animDeplacement() throws FileNotFoundException {
@@ -124,10 +128,14 @@ public class AppliTrafic extends Application  {
         Noeud  n = new Noeud(0,0);
         Noeud temp = new Noeud(0,0);
         ArrayList<Voiture> ltemp = new ArrayList<>();
+        int xdest = 0;
+        int ydest = 0;
+
         //Test
         System.out.println("TEST");
         //Appel pour créer les voitures
-        createCar(tempoNoeuds);
+            createCar(tempoNoeuds);
+
         //Appel pour changer la couleur des feux
         SetFeux();
 
@@ -135,8 +143,9 @@ public class AppliTrafic extends Application  {
         System.out.println(voitures.size());
             for (int i = 0; i < voitures.size(); i++) {
                 Voiture v = voitures.get(i);
+
                 //n = v.prochainNoeud();
-                if(v.vertical) {
+               if(v.vertical) {
                     if (GetVertVertical(v.prochainNoeud())) {//vertical
                         avancer = true;
                         n = v.prochainNoeud();
@@ -144,7 +153,7 @@ public class AppliTrafic extends Application  {
                         avancer = false;
                         n = temp;
                     }
-                }else {
+               }else {
                     if(!(GetVertVertical(v.prochainNoeud()))){
                         avancer = true;
                         n = v.prochainNoeud();
@@ -153,14 +162,21 @@ public class AppliTrafic extends Application  {
                         avancer = false;
                         n = temp;
                     }
-                }
-                temp = v.prochainNoeud();
+               }temp = v.prochainNoeud();
 
+
+                //n = v.prochainNoeud();avancer =true;
                 if (n != null) {//on n'est pas a la fin
+
                     DessinVoiture AffichageVoiture = dessinsVoitures.get(i);
                     Timeline timeline = new Timeline();
-                    int xdest = decalage + n.getX() * 80;
-                    int ydest = decalage + n.getY() * 80;
+                    if(v.vertical) {
+                            xdest = (decalage - 20 + n.getX() * 80);
+                            ydest = (decalage + n.getY() * 80);
+                    }else {
+                            xdest = (decalage + n.getX() * 80);
+                            ydest = (decalage + 20 + n.getY() * 80);
+                    }
 
                     if(avancer) {
                         KeyFrame bougeVoiture = new KeyFrame(new Duration(tempo),
@@ -171,10 +187,7 @@ public class AppliTrafic extends Application  {
                         timeline.play();
                         AffichageVoiture.setAnimation(timeline);
 
-                }
-                else//on est sur le dernier noeud
-                {
-                    //Supprime les véhicule de la MAP
+                }else {
                     System.out.println("ELSE");
                     root.getChildren().remove(dessinsVoitures.get(v.id));
                     ltemp.add(v);
@@ -187,20 +200,30 @@ public class AppliTrafic extends Application  {
             }
        }
 //Regarde si le déplacement est vertical ou horizontal
-       public Boolean GetVertVertical(Noeud no){
-           for(Noeud noeud:temNoeuds)
-           {
-               if(noeud.equals(no)){
-                   for(int i =0; i<noeud.ListFeux.size();i++){
-                       if(noeud.ListFeux.get(i).getFid() == 1)
-                       {
-                            if(noeud.ListFeux.get(i).getFill()==Color.GREEN) return true;
-                       }
-                   }
-               }
-           }
-           return false;
-       }
+
+
+    public Boolean GetVertVertical(Noeud no){
+        for(Noeud noeud:noeuds)
+        {
+            if(noeud.equals(no)){
+                for(int i =0;i<tempoNoeuds.size();i++){
+                    if(tempoNoeuds.contains(no)){
+                        return true;
+                    }
+                }
+            }else {
+
+                for(int i =0; i<noeud.ListFeux.size();i++){
+                    if(noeud.ListFeux.get(i).getFid() == 1)
+                    {
+                        if(noeud.ListFeux.get(i).getFill()==Color.GREEN) return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
 
 
     public static void main(String[] args) { launch(args); }
@@ -210,12 +233,14 @@ public class AppliTrafic extends Application  {
 
         for(int i = 0; i< tempoNoeuds.size();i ++){
             if(tempoNoeuds.get(i).getX() == 0 ){
-                voitures.add(new Voiture(voiture, tempoNoeuds.get(i).getX(),tempoNoeuds.get(i).getY(),5,tempoNoeuds.get(i).getY(),true));
+                Noeud noeuddep = new Noeud( tempoNoeuds.get(i).getX(),tempoNoeuds.get(i).getY());
+                voitures.add(new Voiture(voiture, tempoNoeuds.get(i).getX(),tempoNoeuds.get(i).getY(),5,tempoNoeuds.get(i).getY(),true,noeuddep));
                 DessCar(voitures.get(i));
                 voiture++;
             }
             if (tempoNoeuds.get(i).getY()==5){
-                voitures.add(new Voiture(voiture, tempoNoeuds.get(i).getX(),tempoNoeuds.get(i).getY(),tempoNoeuds.get(i).getX(),0,false));
+                Noeud noueddep = new Noeud(tempoNoeuds.get(i).getX(),tempoNoeuds.get(i).getY());
+                voitures.add(new Voiture(voiture, tempoNoeuds.get(i).getX(),tempoNoeuds.get(i).getY(),tempoNoeuds.get(i).getX(),0,false,noueddep));
                 DessCar(voitures.get(i));
                 voiture++;
             }
@@ -241,5 +266,32 @@ public class AppliTrafic extends Application  {
 
        }
    }
+    /*public Boolean GetVertVertical(Noeud no){
+                       if(tempoNoeuds.contains(no)){
+                           return true;
+                       }else {
+                           for(int i =0; i<no.ListFeux.size();i++){
+                               if(no.ListFeux.get(i).getFid() == 1)
+                               {
+                                   if(no.ListFeux.get(i).getFill()==Color.GREEN) return true;
+                               }
+                       }
+                    }
+         return false;
+       }*/
+
+    /*public Boolean GetVertHorizontal(Noeud no){
+        if(tempoNoeuds.contains(no)){
+            return true;
+        }else {
+            for(int i =0; i<no.ListFeux.size();i++){
+                if(no.ListFeux.get(i).getFid() == 2)
+                {
+                    if(no.ListFeux.get(i).getFill()==Color.GREEN) return true;
+                }
+            }
+        }
+        return false;
+    }*/
 }
 
